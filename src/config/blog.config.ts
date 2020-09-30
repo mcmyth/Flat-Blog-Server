@@ -9,6 +9,7 @@ export const jwtConfig = {
     secret: 'secret12345',
     algorithms: ['HS256'],
     credentialsRequired: false,
+    expiresIn: 3600 * 24 * 3
 }
 
 export const CrossOrigin = (req, res, next) => {
