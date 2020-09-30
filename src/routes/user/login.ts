@@ -2,7 +2,7 @@ export {}
 import {Router} from 'express'
 const router = Router();
 import {UserDao} from "../../data/User"
-router.post('/',function(req:any,res:any){
+router.post('/login',function(req:any,res:any){
     const srvCaptchaKey = req.session.captchaKey
     const cliCaptchaKey = req.body.captchaKey
     const data = req.body

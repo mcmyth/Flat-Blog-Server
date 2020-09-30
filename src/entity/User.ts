@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-import {DateFormatter} from '../lib/date'
+import {DateFormatter} from '../lib/Date'
 @Entity()
 export class User {
 

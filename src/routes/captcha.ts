@@ -1,4 +1,4 @@
-import svgCaptcha from '../../lib/captcha'
+import svgCaptcha from '../lib/Captcha'
 import {Router} from 'express'
 const router = Router();
 router.get('/', function (req, res) {

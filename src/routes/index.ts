@@ -4,9 +4,9 @@ const router = express.Router();   //可使用 express.Router 类创建模块化
 
 const login = require('./user/login')
 const register = require('./user/register')
-const captcha = require('./user/captcha')
+const captcha = require('./captcha')
 //Routers
-router.use('/login',login)
-router.use('/register',register)
+router.use('/user',login)
+router.use('/user',register)
 router.use('/captcha',captcha)
 module.exports = router
