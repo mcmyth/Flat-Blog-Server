@@ -8,6 +8,7 @@ export const UserDao = {
         const entityManager = getManager()
         let user = new User()
         user.username = username
+        user.nickname = username
         user.password = await bcrypt.hash(password,10)
         user.email = email
         user.register_date = register_date
@@ -16,7 +17,11 @@ export const UserDao = {
     login: async (username,password) => {
         const entityManager = getManager()
         let result = await entityManager.getRepository(User).createQueryBuilder('user')
-            .where("username = :username", { username: username}).getOne()
+            .where("username = :username", { username: username})
+            .select(['user.id','user.username'])
+            .addSelect(['user.password'])
+            .getOne()
+        console.log(result);
         let isCorrectPassword = false
         let token = null
         if(result !== undefined){
@@ -41,5 +46,26 @@ export const UserDao = {
             response.msg = '密码或者用户名错误'
         }
         return response;
+    },
+    profile: async (token) => {
+        let profile
+        try{
+        const raw = String(token).split(' ').pop()
+        profile = await jwt.verify(raw,jwtConfig.secret)
+        }catch (err){
+            console.log(err.message)
+            return {
+                status: 'error',
+                msg: err.message
+            }
+        }
+        const entityManager = getManager()
+        let result = await entityManager.getRepository(User).createQueryBuilder('user')
+            .where('id = :id', { id: profile.id})
+            .getOne()
+        let response = result
+        response['status'] = 'ok'
+        response['message'] = '获取成功'
+        return response
     }
 }
