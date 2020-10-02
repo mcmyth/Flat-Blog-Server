@@ -11,9 +11,9 @@ export const put = (localFilename,remoteFilename) => {
         cos.putObject({
             Bucket: env.cos.Bucket,
             Region:env.cos.Region,
-            Key: env.cos.remoteBasePath + localFilename,
+            Key: env.cos.remoteBasePath + remoteFilename,
             StorageClass: 'STANDARD',
-            Body: fs.createReadStream(env.cos.localBasePath + remoteFilename), // 上传文件对象
+            Body: fs.createReadStream(env.cos.localBasePath + localFilename), // 上传文件对象
             onProgress: function(progressData) {
                 console.log(JSON.stringify(progressData));
             }

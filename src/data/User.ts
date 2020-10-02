@@ -1,7 +1,8 @@
 import {getManager} from "typeorm"
 import {User} from '../entity/User'
-const jwt = require('jsonwebtoken')
 import {jwtConfig} from '../config/blog.config'
+
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 export const UserDao = {
     register: async (username,password,email,register_date) => {
@@ -21,7 +22,6 @@ export const UserDao = {
             .select(['user.id','user.username'])
             .addSelect(['user.password'])
             .getOne()
-        console.log(result);
         let isCorrectPassword = false
         let token = null
         if(result !== undefined){
@@ -60,10 +60,9 @@ export const UserDao = {
             }
         }
         const entityManager = getManager()
-        let result = await entityManager.getRepository(User).createQueryBuilder('user')
-            .where('id = :id', { id: profile.id})
+        let response = await entityManager.getRepository(User).createQueryBuilder('user')
+            .where('id = :id', {id: profile.id})
             .getOne()
-        let response = result
         response['status'] = 'ok'
         response['message'] = '获取成功'
         return response

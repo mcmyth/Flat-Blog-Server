@@ -9,7 +9,7 @@ export const env = {
         secretKey: 'Your secretKey',
         Bucket: 'Your Bucket',
         Region: 'Your Region',
-        remoteBasePath: '/static/',
+        remoteBasePath: 'static/',
         localBasePath: 'static/'
     }
 }

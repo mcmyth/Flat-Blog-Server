@@ -16,18 +16,21 @@ router.post('/upload',async function(req:any,res:any){
     }
     let token = req.headers.authorization
     const user:any = await UserDao.profile(token)
-    console.log(user.status)
-    const form = new formidable.IncomingForm()
-    form.parse(req,function(err,fields,files){
-        if(files !== undefined) {
-            console.log()
-            fs.rename(files.banner_img.path,env.cos.localBasePath + files.banner_img.name,async err => {
-                if (!err){
-                    // await put('','')
-                }
-            })
-        }
-    });
+    if(user.status === 'ok') {
+        const form = new formidable.IncomingForm()
+        form.parse(req,function(err,fields,files){
+            if(files !== undefined) {
+                const oldPath = files.banner_img.path
+                const newPath = env.cos.localBasePath + files.banner_img.name
+                const fileName = files.banner_img.name
+                fs.rename(oldPath, newPath, async err => {
+                    if (!err){
+                        console.log(await put(fileName, 'user/banner/' + fileName))
+                    }
+                })
+            }
+        });
+    }
     res.send(response)
 });
 
