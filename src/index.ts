@@ -4,7 +4,7 @@ const session = require("express-session")
 const expressJwt = require('express-jwt')
 const index = require('./routes')
 const Config = require('./config/blog.config')
-import { dbConnection } from './data'
+import { dbConnection } from './dao'
 
 const app = express()
 app.use(cookieParser())

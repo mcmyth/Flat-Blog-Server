@@ -2,7 +2,7 @@ export {}
 import {Router} from 'express'
 import { env } from '../../config/env'
 import {put} from '../../lib/Cos'
-import {UserDao} from "../../data/User"
+import {UserDao} from "../../dao/User"
 const fs = require('fs')
 const formidable = require('formidable')
 const router = Router();

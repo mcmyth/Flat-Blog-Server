@@ -1,7 +1,7 @@
 export {}
 import {Router} from 'express'
 import {DateFormatter} from "../../lib/Date";
-import {UserDao} from "../../data/User"
+import {UserDao} from "../../dao/User"
 const router = Router();
 router.post('/register',function(req:any,res:any){
     const srvCaptchaKey = req.session.captchaKey
