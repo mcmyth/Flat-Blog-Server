@@ -4,13 +4,13 @@
 
 ```typescript
 export const env = {
-    cos: {
-        secretId: 'Your secretId',
-        secretKey: 'Your secretKey',
-        Bucket: 'Your Bucket',
-        Region: 'Your Region',
-        remoteBasePath: 'static/',
-        localBasePath: 'static/'
+  cos: {
+      secretId: 'Your secretId',
+      secretKey: 'Your secretKey',
+      Bucket: 'Your Bucket',
+      Region: 'Your Region',
+      remoteBasePath: 'static/',
+      localBasePath: 'static/'
     }
 }
 ```

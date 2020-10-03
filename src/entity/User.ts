@@ -1,39 +1,41 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column} from "typeorm"
 import {DateFormatter} from '../lib/Utils'
-const uuid  = require('uuid')
+
+const uuid = require('uuid')
+
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({
-        default: () => "'" + String(uuid.v1()) + "'",
-    })
-    uuid: string;
+  @Column({
+    default: () => "'" + String(uuid.v1()) + "'",
+  })
+  uuid: string;
 
-    @Column()
-    username: string;
+  @Column()
+  username: string;
 
-    @Column({ select: false })
-    password: string;
+  @Column({select: false})
+  password: string;
 
-    @Column()
-    email: string;
+  @Column()
+  email: string;
 
-    @Column()
-    nickname: string;
+  @Column()
+  nickname: string;
 
-    @Column()
-    avatar: string;
+  @Column()
+  avatar: string;
 
-    @Column()
-    header_img: string;
+  @Column()
+  header_img: string;
 
-    @Column({
-        type: "datetime",
-        default: () => "'" + DateFormatter(new Date()) +"'"
-    })
-    register_date: Date;
+  @Column({
+    type: "datetime",
+    default: () => "'" + DateFormatter(new Date()) + "'"
+  })
+  register_date: Date;
 
 }
