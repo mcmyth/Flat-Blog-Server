@@ -7,14 +7,16 @@ const webp = require('webp-converter')
 export const send = (res, options) => {
   fs.rename(options.oldPath, options.newPath, async err => {
     if (!err) {
-      const webpName = options.user.uuid + '.webp'
+      const webpName = options.user.uuid + '_'+ options.keyName +'.webp'
       const webpPath = env.cos.localBasePath + webpName
-      webp.cwebp(options.newPath, webpPath, "-q 80", function (status, error) {
-        if (status === 100) {
-          // success
-        }
-      });
-      const cosResponse: any = await put(options.fileName, 'user/' + options.keyName + '/' + webpName)
+      const webpResponse = await webp.cwebp(options.newPath, webpPath, "-q 80")
+      if (webpResponse.search('NOT_ENOUGH_DATA') !== -1) {
+        options.response.msg = '请上传正确的图片格式'
+        options.response.status = 'error'
+        res.send(options.response)
+        return
+      }
+      const cosResponse: any = await put(options.fileName, 'user/' + options.keyName + '/' + options.user.uuid)
       if (cosResponse.statusCode === 200) {
         options.response.msg = '数据上传成功'
         options.response.status = 'ok'
@@ -30,7 +32,7 @@ export const send = (res, options) => {
         options.response.msg = '数据上传失败'
         options.response.status = 'error'
       }
+      res.send(options.response)
     }
-    res.send(options.response)
   })
 }
