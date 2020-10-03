@@ -27,7 +27,9 @@
       "qcloud-cos-sts": "^3.0.2",
       "reflect-metadata": "^0.1.10",
       "svg-captcha": "^1.4.0",
-      "typeorm": "0.2.26"
+      "typeorm": "0.2.26",
+      "uuid": "^8.3.0",
+      "webp-converter": "^2.3.0"
    },
    "scripts": {
       "start": "ts-node src/index.ts"

@@ -1,3 +1,10 @@
+export const lookupArrayKey =  (arr:Array<string>, name:string) => {
+    for(let i = 0, len = arr.length; i < len; i++) {
+        if (arr[i] === name) return true
+    }
+    return false
+}
+
 export const DateFormatter = function(date) {
     const month = date.getMonth() + 1;
     const day = date.getDate();
