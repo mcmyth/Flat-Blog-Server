@@ -1,6 +1,7 @@
 import {getManager} from "typeorm"
 import {User} from '../entity/User'
 import {jwtConfig} from '../config/blog.config'
+import {env} from "../config/env"
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
@@ -63,6 +64,8 @@ export const UserDao = {
     let response = await entityManager.getRepository(User).createQueryBuilder('user')
       .where('id = :id', {id: profile.id})
       .getOne()
+    response['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + response.uuid
+    response['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + response.uuid
     response['status'] = 'ok'
     response['message'] = '获取成功'
     return response

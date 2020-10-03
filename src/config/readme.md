@@ -10,7 +10,8 @@ export const env = {
       Bucket: 'Your Bucket',
       Region: 'Your Region',
       remoteBasePath: 'static/',
-      localBasePath: 'static/'
+      localBasePath: 'static/',
+      assetsDomain: 'Your COS Custom Domain'
     }
 }
 ```

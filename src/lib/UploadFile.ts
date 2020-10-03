@@ -7,7 +7,7 @@ const webp = require('webp-converter')
 export const send = (res, options) => {
   fs.rename(options.oldPath, options.newPath, async err => {
     if (!err) {
-      const webpName = options.user.uuid + '_'+ options.keyName +'.webp'
+      const webpName = options.user.uuid + '_' + options.keyName + '.webp'
       const webpPath = env.cos.localBasePath + webpName
       const webpResponse = await webp.cwebp(options.newPath, webpPath, "-q 80")
       if (webpResponse.search('NOT_ENOUGH_DATA') !== -1) {
@@ -22,7 +22,7 @@ export const send = (res, options) => {
         options.response.status = 'ok'
         let link: string | URL = 'https://' + cosResponse.Location
         link = new URL(link)
-        link.hostname = 'assets.mc-myth.cn'
+        link.hostname = env.cos.assetsDomain
         options.response.link = link
         fs.unlink(options.newPath, error => {
         })
