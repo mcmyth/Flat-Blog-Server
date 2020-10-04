@@ -48,7 +48,7 @@ export const UserDao = {
     }
     return response;
   },
-  profile: async (token) => {
+  profileByToken: async (token) => {
     let profile
     try {
       const raw = String(token).split(' ').pop()
@@ -69,5 +69,28 @@ export const UserDao = {
     response['status'] = 'ok'
     response['message'] = '获取成功'
     return response
+  },
+  profileByID: async (id) => {
+    let profile:any = {
+      status: 'unknown',
+      msg: '未知错误'
+    }
+    const entityManager = getManager()
+    let response = await entityManager.getRepository(User).createQueryBuilder('user')
+      .where('id = :id OR uuid = :id', {id})
+      .select(['user.id', 'user.username', 'user.nickname', 'user.uuid'])
+      .getOne()
+    if (response !== undefined) {
+      profile = response
+      profile['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + response.uuid
+      profile['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + response.uuid
+      profile['status'] = 'ok'
+      profile['message'] = '获取成功'
+    } else {
+      profile['status'] = 'error'
+      profile['msg'] = '获取失败,该用户可能不存在'
+    }
+
+    return profile
   }
 }

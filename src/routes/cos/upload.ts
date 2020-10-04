@@ -15,7 +15,7 @@ router.post('/upload', async function (req: any, res: any) {
   }
   const allowType = ['banner_img','avatar_img']
   let token = req.headers.authorization
-  const user: any = await UserDao.profile(token)
+  const user: any = await UserDao.profileByToken(token)
   if (user.status === 'ok') {
     const form = new formidable.IncomingForm()
     form.parse(req, async function (err, fields, files) {

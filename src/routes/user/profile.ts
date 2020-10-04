@@ -5,9 +5,16 @@ const router = Router()
 import {UserDao} from "../../dao/User"
 
 router.get('/profile', function (req: any, res: any) {
-  let token = req.headers.authorization
-  UserDao.profile(token).then(response => {
-    res.json(response)
-  })
+  if (req.query.id !== undefined) {
+    UserDao.profileByID(req.query.id).then(response => {
+      res.json(response)
+    })
+  } else {
+    let token = req.headers.authorization
+    UserDao.profileByToken(token).then(response => {
+      res.json(response)
+    })
+  }
+
 });
 module.exports = router;
