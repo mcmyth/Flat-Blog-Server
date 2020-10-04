@@ -7,19 +7,46 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 export const UserDao = {
   register: async (username, password, email, register_date) => {
+    let response = {
+      status: 'unknown',
+      msg: '未知错误',
+      token: null
+    }
     const entityManager = getManager()
+    let checkUser
+    checkUser = await entityManager.getRepository(User).createQueryBuilder('user')
+      .where("username = :username", {username})
+      .getOne()
+    if (checkUser !== undefined) {
+      response.status = 'error'
+      response.msg = '用户名已存在'
+      console.log(response)
+      return response
+    }
+    checkUser = await entityManager.getRepository(User).createQueryBuilder('user')
+      .where("email = :email", {email})
+      .getOne()
+    if (checkUser !== undefined) {
+      response.status = 'error'
+      response.msg = '用户名已存在'
+      console.log(response)
+      return response
+    }
     let user = new User()
     user.username = username
     user.nickname = username
     user.password = await bcrypt.hash(password, 10)
     user.email = email
     user.register_date = register_date
-    return await entityManager.save(User, user)
+    await entityManager.save(User, user)
+    response.status = 'ok'
+    response.msg = '注册成功!'
+    return response
   },
   login: async (username, password) => {
     const entityManager = getManager()
     let result = await entityManager.getRepository(User).createQueryBuilder('user')
-      .where("username = :username", {username: username})
+      .where("username = :username or email = :email", {username, email: username})
       .select(['user.id', 'user.username'])
       .addSelect(['user.password'])
       .getOne()
