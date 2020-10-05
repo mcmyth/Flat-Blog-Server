@@ -6,7 +6,7 @@ import {UserDao} from "../../dao/User"
 const Utils = require('../../lib/Utils')
 const formidable = require('formidable')
 const router = Router();
-const UploadBanner = require('../../lib/UploadFile')
+const UploadBanner = require('../../lib/UploadImg')
 router.post('/upload', async function (req: any, res: any) {
   let response = {
     status: 'unknown',
@@ -25,8 +25,8 @@ router.post('/upload', async function (req: any, res: any) {
         const fileName = oldPath.substring(oldPath.lastIndexOf('\\') + 1)
         const newPath = env.cos.localBasePath + fileName
         const fileSize = Number((files[keyName].size / 1024).toFixed(2))
-        if (fileSize > 4096) {
-          response.msg = '文件大小不得超过4MB'
+        if (fileSize > 8192) {
+          response.msg = '文件大小不得超过8MB'
           response.status = 'error'
           res.send(response)
           return

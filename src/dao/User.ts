@@ -2,7 +2,7 @@ import {getManager} from "typeorm"
 import {User} from '../entity/User'
 import {jwtConfig} from '../config/blog.config'
 import {env} from "../config/env"
-
+const Utils = require('../lib/Utils')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 export const UserDao = {
@@ -12,6 +12,22 @@ export const UserDao = {
       msg: '未知错误',
       token: null
     }
+    if (Utils.usernameIsValid(username) === false) {
+      response.status = 'error'
+      response.msg = '用户名长度3-8且必须包含大写或小写字母,可包含(0-9,-,_)'
+      return response
+    }
+    if (Utils.passwordIsValid(password) === false) {
+      response.status = 'error'
+      response.msg = '密码长度6-16且必须包含括号内任意两种组合(0-9,A-Z,a-z,@#$%^&*?+_)'
+      return response
+    }
+
+    if (Utils.emailIsValid(email) === false) {
+      response.status = 'error'
+      response.msg = '邮箱格式不正确'
+      return response
+    }
     const entityManager = getManager()
     let checkUser
     checkUser = await entityManager.getRepository(User).createQueryBuilder('user')
@@ -20,7 +36,6 @@ export const UserDao = {
     if (checkUser !== undefined) {
       response.status = 'error'
       response.msg = '用户名已存在'
-      console.log(response)
       return response
     }
     checkUser = await entityManager.getRepository(User).createQueryBuilder('user')
@@ -28,7 +43,7 @@ export const UserDao = {
       .getOne()
     if (checkUser !== undefined) {
       response.status = 'error'
-      response.msg = '用户名已存在'
+      response.msg = '邮箱已存在'
       console.log(response)
       return response
     }

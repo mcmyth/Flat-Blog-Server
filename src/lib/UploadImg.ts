@@ -16,7 +16,7 @@ export const send = (res, options) => {
         res.send(options.response)
         return
       }
-      const cosResponse: any = await put(options.fileName, 'user/' + options.keyName + '/' + options.user.uuid)
+      const cosResponse: any = await put(webpName, 'user/' + options.keyName + '/' + options.user.uuid)
       if (cosResponse.statusCode === 200) {
         options.response.msg = '数据上传成功'
         options.response.status = 'ok'
@@ -24,14 +24,12 @@ export const send = (res, options) => {
         link = new URL(link)
         link.hostname = env.cos.assetsDomain
         options.response.link = link
-        fs.unlink(options.newPath, error => {
-        })
-        fs.unlink(webpPath, error => {
-        })
       } else {
         options.response.msg = '数据上传失败'
         options.response.status = 'error'
       }
+      fs.unlink(options.newPath, error => {})
+      fs.unlink(webpPath, error => {})
       res.send(options.response)
     }
   })
