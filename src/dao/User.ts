@@ -14,7 +14,7 @@ export const UserDao = {
     }
     if (Utils.usernameIsValid(username) === false) {
       response.status = 'error'
-      response.msg = '用户名长度3-8且必须包含大写或小写字母,可包含(0-9,-,_)'
+      response.msg = '用户名长度3-8且必须包含大写或小写字母,可包含数字或下划线'
       return response
     }
     if (Utils.passwordIsValid(password) === false) {
@@ -53,7 +53,13 @@ export const UserDao = {
     user.password = await bcrypt.hash(password, 10)
     user.email = email
     user.register_date = register_date
-    await entityManager.save(User, user)
+    const userProfile = await entityManager.save(User, user)
+    let token = 'Bearer ' + jwt.sign(
+      {
+        id: userProfile.id
+      }, jwtConfig.secret, {expiresIn: jwtConfig.expiresIn}
+    )
+    response.token = token
     response.status = 'ok'
     response.msg = '注册成功!'
     return response

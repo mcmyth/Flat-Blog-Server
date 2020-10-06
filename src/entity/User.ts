@@ -26,12 +26,6 @@ export class User {
   @Column()
   nickname: string;
 
-  @Column()
-  avatar: string;
-
-  @Column()
-  header_img: string;
-
   @Column({
     type: "datetime",
     default: () => "'" + DateFormatter(new Date()) + "'"
