@@ -2,11 +2,10 @@ export {}
 import {Router} from 'express'
 import {env} from '../../config/env'
 import {UserDao} from "../../dao/User"
-
+import {uploadFile} from '../../lib/UploadFile'
 const Utils = require('../../lib/Utils')
 const formidable = require('formidable')
 const router = Router();
-const UploadBanner = require('../../lib/UploadImg')
 router.post('/upload', async (req: any, res: any) => {
   let response = {
     status: 'unknown',
@@ -37,7 +36,7 @@ router.post('/upload', async (req: any, res: any) => {
           res.send(response)
           return
         }
-          UploadBanner.send(res, {
+        uploadFile.userBanner(res, {
             oldPath,
             newPath,
             user,

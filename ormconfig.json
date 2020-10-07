@@ -5,6 +5,7 @@
    "username": "root",
    "password": "123456",
    "database": "test",
+   "charset": "utf8mb4",
    "synchronize": true,
    "logging": false,
    "entities": [

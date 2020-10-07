@@ -30,12 +30,12 @@ export class Post {
     type: "datetime",
     default: () => "'" + DateFormatter(new Date()) + "'"
   })
-  post_date: Date;
+  post_date: string;
 
   @Column({
     type: "datetime",
     default: () => "'" + DateFormatter(new Date()) + "'"
   })
-  update_date: Date;
+  update_date: string;
 
 }

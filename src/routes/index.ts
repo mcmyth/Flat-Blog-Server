@@ -1,24 +1,26 @@
 export {}
 const express = require('express')
 const router = express.Router()
-const login = require('./user/login')
-const register = require('./user/register')
+const userLogin = require('./user/login')
+const userRegister = require('./user/register')
+const userProfile = require('./user/profile')
 const captcha = require('./captcha')
-const profile = require('./user/profile')
-const upload = require('./cos/upload')
-const tst = require('./cos/tst')
-const put = require('./cos/put')
-
+const cosUpload = require('./cos/upload')
+const cosTst = require('./cos/tst')
+const cosPut = require('./cos/put')
+const postEdit = require('./post/edit')
 //Routers
 //user
-router.use('/user', login)
-router.use('/user', register)
-router.use('/user', profile)
+router.use('/user', userLogin)
+router.use('/user', userRegister)
+router.use('/user', userProfile)
 router.use('/captcha', captcha)
 
 //cos
-router.use('/cos', tst)
-router.use('/cos', put)
-router.use('/cos', upload)
+router.use('/cos', cosTst)
+router.use('/cos', cosPut)
+router.use('/cos', cosUpload)
 
+//post
+router.use('/post', postEdit)
 module.exports = router
