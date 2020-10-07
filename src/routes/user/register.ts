@@ -1,10 +1,10 @@
 export {}
 import {Router} from 'express'
-import {DateFormatter} from "../../lib/Utils"
-import {UserDao} from "../../dao/User"
+import {DateFormatter} from '../../lib/Utils'
+import {UserDao} from '../../dao/User'
 
 const router = Router();
-router.post('/register', async function (req: any, res: any) {
+router.post('/register', async (req: any, res: any) => {
   const srvCaptchaKey = req.session.captchaKey
   const cliCaptchaKey = req.body.captchaKey
   if (srvCaptchaKey !== undefined && srvCaptchaKey === cliCaptchaKey) {

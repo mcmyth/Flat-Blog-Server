@@ -2,9 +2,9 @@ export {}
 import {Router} from 'express'
 
 const router = Router()
-import {UserDao} from "../../dao/User"
+import {UserDao} from '../../dao/User'
 
-router.get('/profile', function (req: any, res: any) {
+router.get('/profile', (req: any, res: any) => {
   if (req.query.id !== undefined) {
     UserDao.profileByID(req.query.id).then(response => {
       res.json(response)

@@ -1,10 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, Column} from "typeorm"
 import {DateFormatter} from '../lib/Utils'
 
 const uuid = require('uuid')
 
 @Entity()
-export class User {
+export class Post {
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,21 +15,27 @@ export class User {
   uuid: string;
 
   @Column()
-  username: string;
+  user_id: string;
 
   @Column({select: false})
-  password: string;
+  title: string;
 
   @Column()
-  email: string;
+  content: string;
 
   @Column()
-  nickname: string;
+  header_img: string;
 
   @Column({
     type: "datetime",
     default: () => "'" + DateFormatter(new Date()) + "'"
   })
-  register_date: Date;
+  post_date: Date;
+
+  @Column({
+    type: "datetime",
+    default: () => "'" + DateFormatter(new Date()) + "'"
+  })
+  update_date: Date;
 
 }

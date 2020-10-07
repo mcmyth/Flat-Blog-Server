@@ -1,4 +1,4 @@
-import {getManager} from "typeorm"
+import {getManager} from 'typeorm'
 import {User} from '../entity/User'
 import {jwtConfig} from '../config/blog.config'
 import {env} from "../config/env"

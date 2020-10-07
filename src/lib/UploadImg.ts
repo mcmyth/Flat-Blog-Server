@@ -1,6 +1,6 @@
-import {env} from "../config/env"
-import {put} from "./Cos"
-import {URL} from "url"
+import {env} from '../config/env'
+import {put} from './Cos'
+import {URL} from 'url'
 
 const fs = require('fs')
 const webp = require('webp-converter')

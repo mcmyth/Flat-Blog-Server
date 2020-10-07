@@ -7,7 +7,7 @@ const Utils = require('../../lib/Utils')
 const formidable = require('formidable')
 const router = Router();
 const UploadBanner = require('../../lib/UploadImg')
-router.post('/upload', async function (req: any, res: any) {
+router.post('/upload', async (req: any, res: any) => {
   let response = {
     status: 'unknown',
     msg: '未知错误',
