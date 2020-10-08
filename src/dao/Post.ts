@@ -1,9 +1,9 @@
 import {getManager} from 'typeorm'
 import {Post} from '../entity/Post'
-import {jwtConfig} from '../config/blog.config'
 import {DateFormatter} from "../lib/Utils";
 
-const jwt = require('jsonwebtoken')
+const Utils = require('../lib/Utils')
+
 export const PostDao = {
   newPost: async (token, title, content, header_img?) => {
     let response = {
@@ -14,18 +14,9 @@ export const PostDao = {
     }
     const entityManager = getManager()
     let post = new Post()
-    let user_id = null
-    try {
-      const raw = String(token).split(' ').pop()
-      user_id = await jwt.verify(raw, jwtConfig.secret).id
-    } catch (err) {
-      console.log(err.message)
-      return {
-        status: 'error',
-        msg: err.message
-      }
-    }
-    post.user_id = user_id
+    const profile = await Utils.getProfileByToken(token)
+    if (profile.status === 'error') return profile
+    post.user_id = profile.id
     post.title = title
     post.content = content
     post.post_date = DateFormatter(new Date())
@@ -45,18 +36,10 @@ export const PostDao = {
       post_id: null,
       post_uuid: null
     }
-    let user_id = null
-    try {
-      const raw = String(token).split(' ').pop()
-      user_id = await jwt.verify(raw, jwtConfig.secret).id
-    } catch (err) {
-      return {
-        status: 'error',
-        msg: err.message
-      }
-    }
+    const profile = await Utils.getProfileByToken(token)
+    if (profile.status === 'error') return profile
     const postInfo = await PostDao.getPost(id)
-    if (String(postInfo.user_id) !== String(user_id)) {
+    if (String(postInfo.user_id) !== String(profile.id)) {
       response.status = 'error'
       response.msg = '权限不足'
       return response
@@ -110,6 +93,15 @@ export const PostDao = {
         msg: '找不到该文章'
       }
     }
+    return response
+  },
+  getList: async (id) => {
+    const entityManager = getManager()
+    const response = await entityManager.getRepository(Post).createQueryBuilder('post')
+      .select('COUNT(*)','count')
+      .where('user_id = :id', {id})
+      .getRawOne()
+    response.count = Number(response.count)
     return response
   }
 }

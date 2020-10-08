@@ -1,10 +1,8 @@
 import {getManager} from 'typeorm'
 import {User} from '../entity/User'
-import {jwtConfig} from '../config/blog.config'
 import {env} from "../config/env"
-import {Post} from "../entity/Post";
+
 const Utils = require('../lib/Utils')
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 export const UserDao = {
   register: async (username, password, email, register_date) => {
@@ -54,11 +52,9 @@ export const UserDao = {
     user.email = email
     user.register_date = register_date
     const userProfile = await entityManager.save(User, user)
-    let token = 'Bearer ' + jwt.sign(
-      {
-        id: userProfile.id
-      }, jwtConfig.secret, {expiresIn: jwtConfig.expiresIn}
-    )
+    let token = Utils.signJwt({
+      id: userProfile.id
+    })
     response.token = token
     response.status = 'ok'
     response.msg = '注册成功!'
@@ -75,11 +71,9 @@ export const UserDao = {
     let token = null
     if (result !== undefined) {
       isCorrectPassword = await bcrypt.compare(password, result.password)
-      token = 'Bearer ' + jwt.sign(
-        {
-          id: result.id
-        }, jwtConfig.secret, {expiresIn: jwtConfig.expiresIn}
-      )
+      token = Utils.signJwt({
+        id: result.id
+      })
     }
     let response = {
       status: 'unknown',
@@ -97,21 +91,13 @@ export const UserDao = {
     return response;
   },
   profileByToken: async (token) => {
-    let profile
-    try {
-      const raw = String(token).split(' ').pop()
-      profile = await jwt.verify(raw, jwtConfig.secret)
-    } catch (err) {
-      console.log(err.message)
-      return {
-        status: 'error',
-        msg: err.message
-      }
-    }
+    const profile = await Utils.getProfileByToken(token)
+    if (profile.status === 'error') return profile
     const entityManager = getManager()
     let response = await entityManager.getRepository(User).createQueryBuilder('user')
       .where('id = :id', {id: profile.id})
       .getOne()
+    console.log(profile)
     response['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + response.uuid
     response['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + response.uuid
     response['status'] = 'ok'
@@ -145,16 +131,8 @@ export const UserDao = {
       status: 'unknown',
       msg: '未知错误'
     }
-    let profile
-    try {
-      const raw = String(token).split(' ').pop()
-      profile = await jwt.verify(raw, jwtConfig.secret)
-    } catch (err) {
-      return {
-        status: 'error',
-        msg: err.message
-      }
-    }
+    const profile = await Utils.getProfileByToken(token)
+    if (profile.status === 'error') return profile
     if (Utils.usernameIsValid(nickname) === false) {
       response.status = 'error'
       response.msg = '用户名长度3-8且必须包含大写或小写字母,可包含数字或下划线'

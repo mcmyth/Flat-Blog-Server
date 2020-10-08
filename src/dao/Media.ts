@@ -1,8 +1,9 @@
 import {getManager} from 'typeorm'
 import {Media} from '../entity/Media'
-import {jwtConfig} from '../config/blog.config'
 import {DateFormatter} from "../lib/Utils";
-const jwt = require('jsonwebtoken')
+
+const Utils = require('../lib/Utils')
+
 export const MediaDao = {
   newMedia: async (token, filename, size, folder?) => {
     let response = {
@@ -12,18 +13,9 @@ export const MediaDao = {
     }
     const entityManager = getManager()
     let media = new Media()
-    let user_id = null
-    try {
-      const raw = String(token).split(' ').pop()
-      user_id = await jwt.verify(raw, jwtConfig.secret).id
-    } catch (err) {
-      console.log(err.message)
-      return {
-        status: 'error',
-        msg: err.message
-      }
-    }
-    media.user_id = user_id
+    const profile = await Utils.getProfileByToken(token)
+    if (profile.status === 'error') return profile
+    media.user_id = profile.id
     media.filename = filename
     media.folder = folder
     media.size = size
