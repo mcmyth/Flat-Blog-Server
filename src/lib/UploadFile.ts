@@ -5,6 +5,7 @@ import {response} from "express";
 
 const fs = require('fs')
 const webp = require('webp-converter')
+const uuid = require('uuid')
 
 export class uploadFile {
   static userBanner(res, options) {
@@ -63,6 +64,31 @@ export class uploadFile {
             res.send(options.response)
           }
         }
+      }
+    })
+  }
+  static media (res,options) {
+    let response:any = {
+      status: 'unknown',
+      msg: '未知错误',
+      data: {
+        succMap: {}
+      }
+    }
+    fs.rename(options.oldPath, options.newPath, async err => {
+      const cosResponse: any = await put(options.fileId, 'media/' + options.fileId)
+      if (cosResponse.statusCode === 200) {
+        let fileLink: string | URL | null = null
+        fileLink = 'https://' + cosResponse.Location
+        fileLink = new URL(fileLink)
+        fileLink.hostname = env.cos.assetsDomain
+        response.msg = '上传成功'
+        response.status = 'ok'
+        const originalName = options.originalName
+        response.data.succMap[originalName] = fileLink
+        fs.unlink(options.newPath, err => {
+        })
+        res.send(response)
       }
     })
   }

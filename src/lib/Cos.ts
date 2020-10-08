@@ -36,3 +36,15 @@ export const del = (remoteFilename) => {
     });
   })
 }
+
+export const query = (remoteFilename) => {
+  return new Promise(resolve => {
+    cos.getBucket({
+      Bucket: env.cos.Bucket,
+      Region: env.cos.Region,
+      Prefix: remoteFilename,
+    }, (err, data) => {
+      resolve(err || data)
+    });
+  })
+}

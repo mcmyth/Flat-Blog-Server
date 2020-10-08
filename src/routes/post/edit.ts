@@ -21,7 +21,7 @@ router.post('/edit', async (req: any, res: any) => {
       const content = fields.content
       const token = req.headers.authorization
       response = await PostDao.newPost(token,title,content)
-      const postId = response.post_id
+      const postId = response.post_uuid
       // Upload banner to cos
       if(Object.keys(files).length !== 0) {
         const oldPath = files['header_img'].path
