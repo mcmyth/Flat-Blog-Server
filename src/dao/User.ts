@@ -2,6 +2,7 @@ import {getManager} from 'typeorm'
 import {User} from '../entity/User'
 import {jwtConfig} from '../config/blog.config'
 import {env} from "../config/env"
+import {Post} from "../entity/Post";
 const Utils = require('../lib/Utils')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
@@ -22,7 +23,6 @@ export const UserDao = {
       response.msg = '密码长度6-16且必须包含括号内任意两种组合(0-9,A-Z,a-z,@#$%^&*?+_)'
       return response
     }
-
     if (Utils.emailIsValid(email) === false) {
       response.status = 'error'
       response.msg = '邮箱格式不正确'
@@ -138,7 +138,36 @@ export const UserDao = {
       profile['status'] = 'error'
       profile['msg'] = '获取失败,该用户可能不存在'
     }
-
     return profile
+  },
+  updateUserName: async (token, nickname) => {
+    let response:any = {
+      status: 'unknown',
+      msg: '未知错误'
+    }
+    let profile
+    try {
+      const raw = String(token).split(' ').pop()
+      profile = await jwt.verify(raw, jwtConfig.secret)
+    } catch (err) {
+      return {
+        status: 'error',
+        msg: err.message
+      }
+    }
+    if (Utils.usernameIsValid(nickname) === false) {
+      response.status = 'error'
+      response.msg = '用户名长度3-8且必须包含大写或小写字母,可包含数字或下划线'
+      return response
+    }
+    const entityManager = getManager()
+    await entityManager.createQueryBuilder()
+      .update(User)
+      .set({nickname})
+      .where("id = :id", {id: profile.id})
+      .execute()
+    response.status = 'ok'
+    response.msg = '昵称更新成功'
+    return response
   }
 }
