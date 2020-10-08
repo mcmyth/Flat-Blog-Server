@@ -1,7 +1,7 @@
 import {env} from '../config/env'
 import {put} from './Cos'
 import {URL} from 'url'
-import {response} from "express";
+import {PostDao} from "../dao/Post";
 
 const fs = require('fs')
 const webp = require('webp-converter')
@@ -60,6 +60,7 @@ export class uploadFile {
           if(bannerLink === null) {
             res.send(options.response)
           } else {
+            await PostDao.insertBanner(options.postId, bannerLink)
             options.response['banner_img'] = bannerLink
             res.send(options.response)
           }
