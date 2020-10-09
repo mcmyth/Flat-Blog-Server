@@ -3,9 +3,10 @@ import {Post} from '../entity/Post'
 import {DateFormatter} from "../lib/Utils";
 
 const Utils = require('../lib/Utils')
+const marked = require('marked');
 
 export const PostDao = {
-  newPost: async (token, title, content, header_img?) => {
+  newPost: async (token, title, content_md, header_img?) => {
     let response = {
       status: 'unknown',
       msg: '未知错误',
@@ -18,7 +19,8 @@ export const PostDao = {
     if (profile.status === 'error') return profile
     post.user_id = profile.id
     post.title = title
-    post.content = content
+    post.content_md = content_md
+    post.content_html = marked(content_md)
     post.post_date = DateFormatter(new Date())
     post.update_date = DateFormatter(new Date())
     if (header_img !== undefined) post.header_img = header_img
@@ -29,7 +31,7 @@ export const PostDao = {
     response.post_uuid = postInfo.uuid
     return response
   },
-  updatePost: async (id, token, title, content, header_img?) => {
+  updatePost: async (id, token, title, content_md, header_img?) => {
     let response = {
       status: 'unknown',
       msg: '未知错误',
@@ -48,12 +50,13 @@ export const PostDao = {
     if (header_img !== undefined) {
       data = {
         title: title,
-        content: content
+        content_md
       }
     } else {
       data = {
         title: title,
-        content: content,
+        content_md,
+        content_html: marked(content_md),
         update_date: DateFormatter(new Date()),
         header_img
       }
@@ -82,26 +85,17 @@ export const PostDao = {
     const entityManager = getManager()
     let response: any = await entityManager.getRepository(Post).createQueryBuilder('post')
       .where('id = :id OR uuid = :id', {id})
-      .select(['post.title', 'post.content', 'post.uuid', 'post.header_img', 'post.user_id'])
+      .select(['post.title', 'post.content_md', 'post.uuid', 'post.header_img', 'post.user_id'])
       .getOne()
     if (response !== undefined) {
       response['status'] = 'ok'
-      response['message'] = '获取成功'
+      response['msg'] = '获取成功'
     } else {
       response = {
         status: 'error',
         msg: '找不到该文章'
       }
     }
-    return response
-  },
-  getList: async (id) => {
-    const entityManager = getManager()
-    const response = await entityManager.getRepository(Post).createQueryBuilder('post')
-      .select('COUNT(*)','count')
-      .where('user_id = :id', {id})
-      .getRawOne()
-    response.count = Number(response.count)
     return response
   }
 }

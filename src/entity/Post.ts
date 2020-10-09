@@ -21,7 +21,10 @@ export class Post {
   title: string;
 
   @Column()
-  content: string;
+  content_md: string;
+
+  @Column()
+  content_html: string;
 
   @Column()
   header_img: string;

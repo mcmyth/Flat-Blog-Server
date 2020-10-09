@@ -20,12 +20,12 @@ router.post('/edit', async (req: any, res: any) => {
     if (srvCaptchaKey !== undefined && srvCaptchaKey === cliCaptchaKey) {
       const id = fields.id
       const title = fields.title
-      const content = fields.content
+      const content_md = fields.content_md
       const token = req.headers.authorization
       if (id === 'new') {
-        response = await PostDao.newPost(token, title, content)
+        response = await PostDao.newPost(token, title, content_md)
       } else {
-        response = await PostDao.updatePost(id, token, title, content)
+        response = await PostDao.updatePost(id, token, title, content_md)
         if (response.status === 'error') {
           res.json(response)
           return
