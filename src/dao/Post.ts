@@ -102,17 +102,20 @@ export const PostDao = {
     return response
   },
   getList: async (options) => {
+    let id = options.id
     let response = {
       status: 'unknown',
       msg: '未知错误'
     }
     const entityManager = getManager()
-    //todo
-    if (options.isMe) {}
+    if (!options.isMe) {
+      const profile = await UserDao.profileByID(options.id)
+      id = profile.id
+    }
     //get post count
     const _count = await entityManager.getRepository(Post).createQueryBuilder('post')
       .select('COUNT(*)','count')
-      .where('user_id = :id', {id: options.id})
+      .where('user_id = :id', {id})
       .getRawOne()
     //get post
     const pageSize = 3
@@ -121,7 +124,7 @@ export const PostDao = {
       .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
       .skip(pageIndex)
       .take(pageSize)
-      .where('user_id = :id', {id: options.id})
+      .where('user_id = :id', {id})
       .getMany()
     for (let i = 0; i < post.length; i++) {
       let v = post[i]

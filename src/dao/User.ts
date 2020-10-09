@@ -90,7 +90,7 @@ export const UserDao = {
     }
     return response;
   },
-  profileByToken: async (token) => {
+  profileByToken: async token => {
     const profile = await Utils.getProfileByToken(token)
     if (profile.status === 'error') return profile
     const entityManager = getManager()
@@ -103,14 +103,14 @@ export const UserDao = {
     response['message'] = '获取成功'
     return response
   },
-  profileByID: async (id) => {
+  profileByID: async id => {
     let profile:any = {
       status: 'unknown',
       msg: '未知错误'
     }
     const entityManager = getManager()
     let response = await entityManager.getRepository(User).createQueryBuilder('user')
-      .where('id = :id OR uuid = :id', {id})
+      .where('id = :id OR uuid = :id OR username = :id', {id})
       .select(['user.id', 'user.username', 'user.nickname', 'user.uuid'])
       .getOne()
     if (response !== undefined) {
