@@ -1,9 +1,12 @@
 import {getManager} from 'typeorm'
 import {Post} from '../entity/Post'
 import {DateFormatter} from "../lib/Utils";
+import {UserDao} from "./User";
+import {User} from "../entity/User";
 
 const Utils = require('../lib/Utils')
 const marked = require('marked');
+const trimHtml = require('trim-html')
 
 export const PostDao = {
   newPost: async (token, title, content_md, header_img?) => {
@@ -96,6 +99,42 @@ export const PostDao = {
         msg: '找不到该文章'
       }
     }
+    return response
+  },
+  getList: async (options) => {
+    let response = {
+      status: 'unknown',
+      msg: '未知错误'
+    }
+    const entityManager = getManager()
+    //todo
+    if (options.isMe) {}
+    //get post count
+    const _count = await entityManager.getRepository(Post).createQueryBuilder('post')
+      .select('COUNT(*)','count')
+      .where('user_id = :id', {id: options.id})
+      .getRawOne()
+    //get post
+    const pageSize = 3
+    const pageIndex = Utils.getRowIndex(options.page, pageSize)
+    const post = await entityManager.getRepository(Post).createQueryBuilder('post')
+      .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
+      .skip(pageIndex)
+      .take(pageSize)
+      .where('user_id = :id', {id: options.id})
+      .getMany()
+    for (let i = 0; i < post.length; i++) {
+      let v = post[i]
+      v.content_html = Utils.parseToText(trimHtml(v.content_html, { limit: 200 }).html)
+      const profile = await UserDao.profileByID(v.user_id)
+      delete v.user_id
+      v['nickname'] = profile.nickname
+      v.update_date = Utils.DateFormatter(v.update_date,false)
+    }
+    response['post'] = post
+    response['status'] = 'ok'
+    response['msg'] = '获取成功'
+    response['page_count'] = Math.ceil(Number(_count.count) / pageSize)
     return response
   }
 }

@@ -52,7 +52,7 @@ export const UserDao = {
     user.email = email
     user.register_date = register_date
     const userProfile = await entityManager.save(User, user)
-    let token = Utils.signJwt({
+    const token = Utils.signJwt({
       id: userProfile.id
     })
     response.token = token
@@ -97,7 +97,6 @@ export const UserDao = {
     let response = await entityManager.getRepository(User).createQueryBuilder('user')
       .where('id = :id', {id: profile.id})
       .getOne()
-    console.log(profile)
     response['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + response.uuid
     response['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + response.uuid
     response['status'] = 'ok'
