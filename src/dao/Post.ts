@@ -2,6 +2,7 @@ import {getManager} from 'typeorm'
 import {Post} from '../entity/Post'
 import {DateFormatter} from "../lib/Utils";
 import {UserDao} from "./User";
+import {env} from "../config/env";
 const COS = require('../lib/Cos')
 
 const Utils = require('../lib/Utils')
@@ -114,38 +115,55 @@ export const PostDao = {
       msg: '删除文章成功'
     }
   },
-  getList: async (options) => {
+  getPostList: async (options) => {
     let id = options.id
     let response = {
       status: 'unknown',
       msg: '未知错误'
     }
     const entityManager = getManager()
-    if (!options.isMe) {
+    if (!options.isMe && options.isMe !== undefined) {
       const profile = await UserDao.profileByID(options.id)
       id = profile.id
     }
-    //get post count
-    const _count = await entityManager.getRepository(Post).createQueryBuilder('post')
-      .select('COUNT(*)','count')
-      .where('user_id = :id', {id})
-      .getRawOne()
     //get post
     const pageSize = 3
     const pageIndex = Utils.getRowIndex(options.page, pageSize)
-    const post = await entityManager.getRepository(Post).createQueryBuilder('post')
-      .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
-      .skip(pageIndex)
-      .take(pageSize)
-      .where('user_id = :id', {id})
-      .orderBy('post.id',"DESC")
-      .getMany()
+    let post
+    let _count
+    if(options.id !== undefined) {
+      //get post count
+      _count = await entityManager.getRepository(Post).createQueryBuilder('post')
+        .select('COUNT(*)','count')
+        .where('user_id = :id', {id})
+        .getRawOne()
+     post = await entityManager.getRepository(Post).createQueryBuilder('post')
+        .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
+        .skip(pageIndex)
+        .take(pageSize)
+        .where('user_id = :id', {id})
+        .orderBy('post.id',"DESC")
+        .getMany()
+    } else {
+      //get post count
+      _count = await entityManager.getRepository(Post).createQueryBuilder('post')
+        .select('COUNT(*)','count')
+        .getRawOne()
+      post = await entityManager.getRepository(Post).createQueryBuilder('post')
+        .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
+        .skip(pageIndex)
+        .take(pageSize)
+        .orderBy('post.id',"DESC")
+        .getMany()
+    }
     for (let i = 0; i < post.length; i++) {
       let v = post[i]
       v.content_html = Utils.parseToText(trimHtml(v.content_html, { limit: 200 }).html)
       const profile = await UserDao.profileByID(v.user_id)
       delete v.user_id
       v['nickname'] = profile.nickname
+      v['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + profile.uuid
+      v['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + profile.uuid
       v.update_date = Utils.DateFormatter(v.update_date,false)
     }
     response['post'] = post

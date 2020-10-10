@@ -38,6 +38,7 @@ export const emailIsValid = v => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v)
 export const parseToText = (str) => {
   str = str.replace(/<audio(.*)>(.*)<\/audio>/g,'[音频]')
   str = str.replace(/<img(.*)>(.*)<\/img>/g,'[图片]')
+  str = str.replace(/<[^>]*>/g,'')
   return str
 }
 

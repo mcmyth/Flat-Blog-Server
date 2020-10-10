@@ -10,7 +10,8 @@ const cosUpload = require('./cos/upload')
 const cosTst = require('./cos/tst')
 const cosPut = require('./cos/put')
 const postEdit = require('./post/edit')
-const postList = require('./post/list')
+const postUserList = require('./post/user')
+const postList = require('./post/index')
 const postDel = require('./post/del')
 //Routers
 //user
@@ -27,6 +28,7 @@ router.use('/cos', cosUpload)
 
 //post
 router.use('/post', postEdit)
-router.use('/post', postList)
+router.use('/post', postUserList)
 router.use('/post', postDel)
+router.use('/post', postList)
 module.exports = router
