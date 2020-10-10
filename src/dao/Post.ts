@@ -2,7 +2,7 @@ import {getManager} from 'typeorm'
 import {Post} from '../entity/Post'
 import {DateFormatter} from "../lib/Utils";
 import {UserDao} from "./User";
-import {User} from "../entity/User";
+const COS = require('../lib/Cos')
 
 const Utils = require('../lib/Utils')
 const marked = require('marked');
@@ -84,7 +84,7 @@ export const PostDao = {
       .where("uuid = :id", {id})
       .execute()
   },
-  getPost: async (id) => {
+  getPost: async id => {
     const entityManager = getManager()
     let response: any = await entityManager.getRepository(Post).createQueryBuilder('post')
       .where('id = :id OR uuid = :id', {id})
@@ -100,6 +100,19 @@ export const PostDao = {
       }
     }
     return response
+  },
+  delPost: async id => {
+    const entityManager = getManager()
+    const post = await PostDao.getPost(id)
+    await COS.del(`post/banner/${post.uuid}`)
+    await entityManager.getRepository(Post).createQueryBuilder('post')
+      .where('id = :id OR uuid = :id', {id})
+      .delete()
+      .execute()
+    return {
+      status: 'ok',
+      msg: '删除文章成功'
+    }
   },
   getList: async (options) => {
     let id = options.id
@@ -125,6 +138,7 @@ export const PostDao = {
       .skip(pageIndex)
       .take(pageSize)
       .where('user_id = :id', {id})
+      .orderBy('post.id',"DESC")
       .getMany()
     for (let i = 0; i < post.length; i++) {
       let v = post[i]

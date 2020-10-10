@@ -26,7 +26,7 @@ export const put = (localFilename, remoteFilename) => {
 
 export const del = (remoteFilename) => {
   return new Promise(resolve => {
-    cos.putObject({
+    cos.deleteObject({
       Bucket: env.cos.Bucket,
       Region: env.cos.Region,
       Key: env.cos.remoteBasePath + remoteFilename,
