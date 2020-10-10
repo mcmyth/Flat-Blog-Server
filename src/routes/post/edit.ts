@@ -32,6 +32,7 @@ router.post('/edit', async (req: any, res: any) => {
         }
       }
       const postId = response.post_uuid
+      if (postId === undefined) return
       // Upload banner to cos
       if (Object.keys(files).length !== 0) {
         const oldPath = files['header_img'].path

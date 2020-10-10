@@ -1,6 +1,10 @@
+//    sameSite: 'None',
+//     secure: true
 export const SessionConfig = {
   secret: '12345',
-  cookie: {maxAge: 60000},
+  cookie: {
+    maxAge: 60000
+  },
   resave: true,
   saveUninitialized: true
 }
@@ -13,7 +17,7 @@ export const jwtConfig = {
 }
 
 export const CrossOrigin = (req, res, next) => {
-  const allowedOrigins = ['http://localhost:888', 'http://localhost:8081', 'http://localhost:8080']
+  const allowedOrigins = ['http://localhost:888', 'http://localhost:8081', 'http://localhost:8080', 'http://site.com:8080']
   const origin = req.headers.origin
   if (allowedOrigins.indexOf(origin) > -1) {
     res.setHeader('Access-Control-Allow-Origin', origin)
