@@ -1,34 +1,21 @@
 export {}
 const express = require('express')
 const router = express.Router()
-const userLogin = require('./user/login')
-const userRegister = require('./user/register')
-const userProfile = require('./user/profile')
-const userMedia = require('./user/media')
-const captcha = require('./captcha')
-const cosUpload = require('./cos/upload')
-const cosTst = require('./cos/tst')
-const cosPut = require('./cos/put')
-const postEdit = require('./post/edit')
-const postUserList = require('./post/user')
-const postList = require('./post/index')
-const postDel = require('./post/del')
-//Routers
 //user
-router.use('/user', userLogin)
-router.use('/user', userRegister)
-router.use('/user', userProfile)
-router.use('/user', userMedia)
-router.use('/captcha', captcha)
+router.use('/user', require('./user/login'))
+router.use('/user', require('./user/register'))
+router.use('/user', require('./user/profile'))
+router.use('/user', require('./user/media'))
+router.use('/captcha', require('./captcha'))
 
 //cos
-router.use('/cos', cosTst)
-router.use('/cos', cosPut)
-router.use('/cos', cosUpload)
+router.use('/cos', require('./cos/tst'))
+router.use('/cos', require('./cos/put'))
+router.use('/cos', require('./cos/upload'))
 
 //post
-router.use('/post', postEdit)
-router.use('/post', postUserList)
-router.use('/post', postDel)
-router.use('/post', postList)
+router.use('/post', require('./post/edit'))
+router.use('/post', require('./post/user'))
+router.use('/post', require('./post/del'))
+router.use('/post', require('./post/index'))
 module.exports = router

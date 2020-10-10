@@ -131,30 +131,47 @@ export const PostDao = {
     const pageIndex = Utils.getRowIndex(options.page, pageSize)
     let post
     let _count
+    post = await entityManager.getRepository(Post).createQueryBuilder('post')
+      .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
+      .skip(pageIndex)
+      .take(pageSize)
+      .orderBy('post.id',"DESC")
+    let searchCondition = 'post.title LIKE :param or post.content_md LIKE :param'
     if(options.id !== undefined) {
       //get post count
-      _count = await entityManager.getRepository(Post).createQueryBuilder('post')
-        .select('COUNT(*)','count')
-        .where('user_id = :id', {id})
-        .getRawOne()
-     post = await entityManager.getRepository(Post).createQueryBuilder('post')
-        .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
-        .skip(pageIndex)
-        .take(pageSize)
-        .where('user_id = :id', {id})
-        .orderBy('post.id',"DESC")
-        .getMany()
+      if (options.s !== undefined) {
+        _count = await entityManager.getRepository(Post).createQueryBuilder('post')
+          .select('COUNT(*)','count')
+          .where(searchCondition + ' and user_id = :id',{param: `%${options.s}%`, id})
+          .getRawOne()
+        post = await post
+          .where(searchCondition + ' and user_id = :id',{param: `%${options.s}%`,id})
+          .getMany()
+      } else {
+        _count = await entityManager.getRepository(Post).createQueryBuilder('post')
+          .select('COUNT(*)','count')
+          .where('user_id = :id', {id})
+          .getRawOne()
+        post = await post.where('user_id = :id', {id}).getMany()
+      }
+
     } else {
       //get post count
-      _count = await entityManager.getRepository(Post).createQueryBuilder('post')
-        .select('COUNT(*)','count')
-        .getRawOne()
-      post = await entityManager.getRepository(Post).createQueryBuilder('post')
-        .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
-        .skip(pageIndex)
-        .take(pageSize)
-        .orderBy('post.id',"DESC")
-        .getMany()
+      if (options.s !== undefined) {
+        _count = await entityManager.getRepository(Post).createQueryBuilder('post')
+          .select('COUNT(*)','count')
+          .where(searchCondition,{param: `%${options.s}%`})
+          .getRawOne()
+        console.log(_count);
+        post = await post
+          .where(searchCondition, {param: `%${options.s}%`})
+          .getMany()
+      } else {
+        _count = await entityManager.getRepository(Post).createQueryBuilder('post')
+          .select('COUNT(*)','count')
+          .getRawOne()
+        post = await post.getMany()
+      }
     }
     for (let i = 0; i < post.length; i++) {
       let v = post[i]
