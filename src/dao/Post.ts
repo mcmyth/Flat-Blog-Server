@@ -89,9 +89,12 @@ export const PostDao = {
     const entityManager = getManager()
     let response: any = await entityManager.getRepository(Post).createQueryBuilder('post')
       .where('id = :id OR uuid = :id', {id})
-      .select(['post.title', 'post.content_md', 'post.uuid', 'post.header_img', 'post.user_id'])
+      .select(['post.title', 'post.content_md', 'post.content_html', 'post.uuid', 'post.header_img', 'post.user_id', 'post.update_date', 'post.post_date'])
       .getOne()
     if (response !== undefined) {
+      response.user = await UserDao.profileByID(response.user_id)
+      response.user_id
+      response.update_date = Utils.DateFormatter(response.update_date)
       response['status'] = 'ok'
       response['msg'] = '获取成功'
     } else {
