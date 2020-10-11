@@ -1,9 +1,6 @@
-import {PostDao} from "../../dao/Post";
-
 export {}
 import {Router} from 'express'
 import {CommentDao} from '../../dao/Comment'
-import {env} from "../../config/env";
 
 const router = Router()
 

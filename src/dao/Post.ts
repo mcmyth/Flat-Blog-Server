@@ -2,6 +2,7 @@ import {getManager} from 'typeorm'
 import {Post} from '../entity/Post'
 import {DateFormatter} from "../lib/Utils";
 import {UserDao} from "./User";
+import {CommentDao} from "./Comment";
 import {env} from "../config/env";
 const COS = require('../lib/Cos')
 
@@ -113,6 +114,7 @@ export const PostDao = {
       .where('id = :id OR uuid = :id', {id})
       .delete()
       .execute()
+    await CommentDao.delPostComment(id)
     return {
       status: 'ok',
       msg: '删除文章成功'

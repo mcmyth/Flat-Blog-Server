@@ -58,6 +58,17 @@ export const CommentDao = {
       }
     }
   },
+  delPostComment: async postId => {
+    const entityManager = getManager()
+    await entityManager.getRepository(Comment).createQueryBuilder('comment')
+      .where('post_id = :post_id', {post_id: postId})
+      .delete()
+      .execute()
+    return {
+      status: 'ok',
+      msg: '删除评论成功'
+    }
+  },
   getComment: async (postId, commentId) => {
     let response = {
       status: 'unknown',
