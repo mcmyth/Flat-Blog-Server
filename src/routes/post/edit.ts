@@ -22,6 +22,12 @@ router.post('/edit', async (req: any, res: any) => {
       const title = fields.title
       const content_md = fields.content_md
       const token = req.headers.authorization
+      if (content_md === '' || title === '') {
+        response.status = 'error'
+        response.msg = '内容或标题不能为空'
+        res.send(response)
+        return
+      }
       if (id === 'new') {
         response = await PostDao.newPost(token, title, content_md)
       } else {
@@ -62,6 +68,7 @@ router.post('/edit', async (req: any, res: any) => {
       })
     }
   })
+  req.session.captchaKey = undefined
 })
 
 router.get('/edit', async (req: any, res: any) => {

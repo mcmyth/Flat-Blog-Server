@@ -89,7 +89,7 @@ export const PostDao = {
     const entityManager = getManager()
     let response: any = await entityManager.getRepository(Post).createQueryBuilder('post')
       .where('id = :id OR uuid = :id', {id})
-      .select(['post.title', 'post.content_md', 'post.content_html', 'post.uuid', 'post.header_img', 'post.user_id', 'post.update_date', 'post.post_date'])
+      .select(['post.id', 'post.title', 'post.content_md', 'post.content_html', 'post.uuid', 'post.header_img', 'post.user_id', 'post.update_date', 'post.post_date'])
       .getOne()
     if (response !== undefined) {
       response.user = await UserDao.profileByID(response.user_id)
@@ -157,7 +157,6 @@ export const PostDao = {
           .getRawOne()
         post = await post.where('user_id = :id', {id}).getMany()
       }
-
     } else {
       //get post count
       if (options.s !== undefined) {
@@ -165,7 +164,6 @@ export const PostDao = {
           .select('COUNT(*)','count')
           .where(searchCondition,{param: `%${options.s}%`})
           .getRawOne()
-        console.log(_count);
         post = await post
           .where(searchCondition, {param: `%${options.s}%`})
           .getMany()
