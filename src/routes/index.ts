@@ -19,4 +19,5 @@ router.use('/post', require('./post/user'))
 router.use('/post', require('./post/del'))
 router.use('/post', require('./post/index'))
 router.use('/post', require('./post/get'))
+router.use('/post', require('./post/comment'))
 module.exports = router
