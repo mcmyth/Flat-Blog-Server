@@ -132,12 +132,12 @@ export const PostDao = {
       id = profile.id
     }
     //get post
-    const pageSize = 3
+    const pageSize = 5
     const pageIndex = Utils.getRowIndex(options.page, pageSize)
     let post
     let _count
     post = await entityManager.getRepository(Post).createQueryBuilder('post')
-      .select(['post.id', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
+      .select(['post.id', 'post.uuid', 'post.header_img', 'post.title', 'post.content_html', 'post.update_date', 'post.user_id'])
       .skip(pageIndex)
       .take(pageSize)
       .orderBy('post.id',"DESC")
@@ -178,12 +178,21 @@ export const PostDao = {
     }
     for (let i = 0; i < post.length; i++) {
       let v = post[i]
-      v.content_html = Utils.parseToText(trimHtml(v.content_html, { limit: 200 }).html)
+      let tHtml = trimHtml(v.content_html, {
+        limit: 200,
+        preserveTags: true
+      })
+      v.content_html = Utils.parseToText(tHtml.html)
       const profile = await UserDao.profileByID(v.user_id)
       delete v.user_id
       v['nickname'] = profile.nickname
+      v['username'] = profile.username
       v['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + profile.uuid
-      v['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + profile.uuid
+      if (v.header_img === '') {
+        v['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + profile.uuid
+      } else {
+        v['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'post/banner/' + v.uuid
+      }
       v.update_date = Utils.DateFormatter(v.update_date,false)
     }
     response['post'] = post

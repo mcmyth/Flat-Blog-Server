@@ -20,10 +20,10 @@ export class Post {
   @Column({select: false})
   title: string;
 
-  @Column()
+  @Column({length: 5000})
   content_md: string;
 
-  @Column()
+  @Column({length: 20000})
   content_html: string;
 
   @Column()

@@ -52,10 +52,12 @@ export const getProfileByToken  = async (token) => {
     user['status'] = '获取成功'
     return user
   } catch (err) {
-    console.log(err.message)
+    let msg = err.message
+    if (err.message === 'jwt malformed')
+      msg = '未登录或令牌已过期'
     return {
       status: 'error',
-      msg: err.message
+      msg: msg
     }
   }
 }
