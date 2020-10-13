@@ -58,6 +58,7 @@ export const PostDao = {
         content_md
       }
     } else {
+      header_img = postInfo.header_img
       data = {
         title: title,
         content_md,

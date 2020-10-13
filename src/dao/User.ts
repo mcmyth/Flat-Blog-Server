@@ -103,16 +103,19 @@ export const UserDao = {
     response['message'] = '获取成功'
     return response
   },
-  profileByID: async id => {
+  profileByID: async (id,deep = false) => {
     let profile:any = {
       status: 'unknown',
       msg: '未知错误'
     }
     const entityManager = getManager()
-    let response = await entityManager.getRepository(User).createQueryBuilder('user')
+    let response:any = await entityManager.getRepository(User).createQueryBuilder('user')
       .where('id = :id OR uuid = :id OR username = :id', {id})
-      .select(['user.id', 'user.username', 'user.nickname', 'user.uuid'])
-      .getOne()
+    if(deep) {
+      response = await response.select(['user.id', 'user.username', 'user.nickname', 'user.uuid', 'user.email_verified', 'user.email']).getOne()
+    } else {
+      response = await response.select(['user.id', 'user.username', 'user.nickname', 'user.uuid', 'user.email_verified']).getOne()
+    }
     if (response !== undefined) {
       profile = response
       profile['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + response.uuid
@@ -145,6 +148,41 @@ export const UserDao = {
       .execute()
     response.status = 'ok'
     response.msg = '昵称更新成功'
+    return response
+  },
+  updateUserEmail: async (id, email) => {
+    let response:any = {
+      status: 'unknown',
+      msg: '未知错误'
+    }
+    if (Utils.emailIsValid(email) === false) {
+      response.status = 'error'
+      response.msg = '邮箱格式不正确'
+      return response
+    }
+    const entityManager = getManager()
+    await entityManager.createQueryBuilder()
+      .update(User)
+      .set({email})
+      .where("id = :id", {id})
+      .execute()
+    response.status = 'ok'
+    response.msg = '邮箱更新成功'
+    return response
+  },
+  updateEmailVerification: async (id, state) => {
+    let response:any = {
+      status: 'unknown',
+      msg: '未知错误'
+    }
+    const entityManager = getManager()
+    await entityManager.createQueryBuilder()
+      .update(User)
+      .set({email_verified: state})
+      .where("id = :id", {id})
+      .execute()
+    response.status = 'ok'
+    response.msg = '状态更新成功'
     return response
   }
 }

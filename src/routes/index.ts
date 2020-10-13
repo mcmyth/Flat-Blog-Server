@@ -6,6 +6,7 @@ router.use('/user', require('./user/login'))
 router.use('/user', require('./user/register'))
 router.use('/user', require('./user/profile'))
 router.use('/user', require('./user/media'))
+router.use('/user', require('./user/verification'))
 router.use('/captcha', require('./captcha'))
 
 //cos

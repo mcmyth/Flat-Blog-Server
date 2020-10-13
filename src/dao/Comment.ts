@@ -2,7 +2,6 @@ import {getManager} from 'typeorm'
 import {Comment} from '../entity/Comment'
 import {UserDao} from "./User"
 import {env} from "../config/env"
-import {Post} from "../entity/Post";
 
 const Utils = require('../lib/Utils')
 

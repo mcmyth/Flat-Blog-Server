@@ -12,8 +12,12 @@ export const env = {
       remoteBasePath: 'static/',
       localBasePath: 'static/',
       assetsDomain: 'Your COS Custom Domain'
+    },
+  email: {
+      user: 'Your Email',
+      pass: 'Your Password'
     }
 }
 ```
 
-This config is used to connect to Tencent Cloud COS
+This config is using to connect to Tencent Cloud COS and send email.

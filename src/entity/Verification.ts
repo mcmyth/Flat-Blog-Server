@@ -1,39 +1,29 @@
 import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert} from 'typeorm'
 import {DateFormatter} from '../lib/Utils'
 
-const uuid = require('uuid')
-
 @Entity()
-export class Comment {
+export class Verification {
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({
-    default: () => "'" + String(uuid.v1()) + "'",
-  })
-  uuid: string;
-
-  @Column()
-  post_id: number;
 
   @Column()
   user_id: number;
 
   @Column()
-  content: string;
+  type: string;
 
   @Column()
-  reply_id: number;
+  code: string;
 
   @Column({
     type: 'datetime',
     default: () => "'" + DateFormatter(new Date()) + "'"
   })
-  comment_date: string;
+  generation_date: string;
 
   @BeforeInsert()
   UpdateDate() {
-    this.comment_date =  DateFormatter(new Date())
+    this.generation_date =  DateFormatter(new Date())
   }
 }

@@ -1,4 +1,5 @@
 import {jwtConfig} from '../config/blog.config'
+
 const jwt = require('jsonwebtoken')
 
 export const lookupArrayKey = (arr: Array<string>, name: string) => {
@@ -35,16 +36,16 @@ export const passwordIsValid = v => /^(?=.*[0-9])(?=.*[a-zA-Z!@#$%^&*?+_])[a-zA-
 
 export const emailIsValid = v => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v)
 
-export const parseToText = (str) => {
-  str = str.replace(/<audio(.*)>(.*)<\/audio>/g,'[音频]')
-  str = str.replace(/<img(.*)>(.*)<\/img>/g,'[图片]')
-  str = str.replace(/<[^>]*>/g,'')
+export const parseToText = str => {
+  str = str.replace(/<audio(.*)>(.*)<\/audio>/g, '[音频]')
+  str = str.replace(/<img(.*)>(.*)<\/img>/g, '[图片]')
+  str = str.replace(/<[^>]*>/g, '')
   return str
 }
 
-export const getRowIndex = (pageNum:number, pageSize:number = 10) => (pageNum > 0) ? (pageNum- 1) * pageSize : 0
+export const getRowIndex = (pageNum: number, pageSize: number = 10) => (pageNum > 0) ? (pageNum - 1) * pageSize : 0
 
-export const getProfileByToken  = async (token) => {
+export const getProfileByToken = async token => {
   try {
     const raw = String(token).split(' ').pop()
     const user = await jwt.verify(raw, jwtConfig.secret)
@@ -62,6 +63,16 @@ export const getProfileByToken  = async (token) => {
   }
 }
 
-export const signJwt  = (profile) => {
+export const signJwt = profile => {
   return 'Bearer ' + jwt.sign(profile, jwtConfig.secret, {expiresIn: jwtConfig.expiresIn})
+}
+
+export const randomId = (length = 5) => {
+  let result = ''
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const charactersLength = characters.length
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
 }

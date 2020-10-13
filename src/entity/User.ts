@@ -24,6 +24,9 @@ export class User {
   email: string;
 
   @Column()
+  email_verified: number;
+
+  @Column()
   nickname: string;
 
   @Column({

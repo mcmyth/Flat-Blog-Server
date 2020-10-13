@@ -27,3 +27,5 @@ export const CrossOrigin = (req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,Authorization,x-upload-token")
   next();
 }
+
+export const webBaseURL = 'http://localhost:8080/'
