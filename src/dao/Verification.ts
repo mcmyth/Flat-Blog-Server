@@ -16,15 +16,18 @@ export const VerificationDao = {
     const entityManager = getManager()
     let verification = new Verification()
     let captchaKey = Utils.randomId()
-    verification.user_id = user_id
+    let profile = await UserDao.profileByAccount(user_id)
+    verification.user_id = profile.id
     verification.type = type
     verification.code = captchaKey
     response.verification = await entityManager.save(Verification, verification)
-    let profile = await UserDao.profileByID(user_id)
+    if (profile.status === 'error') {
+      return profile
+    }
     if (profile !== undefined) {
-      await Mailer.sendCaptchaKey(email, captchaKey, profile)
+      await Mailer.sendCaptchaKey(email, captchaKey, profile, type)
       response.status = 'ok'
-      response.msg = '验证邮件已发送'
+      response.msg = '验证邮件已发送,请查收'
     } else {
       response.status = 'error'
       response.msg = '该用户不存在'
@@ -33,8 +36,9 @@ export const VerificationDao = {
   },
   getCode: async (user_id, type, code?) => {
     const entityManager = getManager()
+    let profile = await UserDao.profileByAccount(user_id)
     let get = await entityManager.getRepository(Verification).createQueryBuilder('verification')
-      .where('user_id = :user_id', {user_id})
+      .where('user_id = :user_id', {user_id: profile.id})
       .andWhere('type = :type',{type})
     let response
     if(code !== undefined) {
@@ -57,8 +61,9 @@ export const VerificationDao = {
   },
   delCode: async  (user_id, type, code?) => {
     const entityManager = getManager()
+    let profile = await UserDao.profileByAccount(user_id)
     let del = await entityManager.getRepository(Verification).createQueryBuilder('verification')
-      .where('user_id = :user_id', {user_id})
+      .where('user_id = :user_id', {user_id: profile.id})
       .andWhere('type = :type',{type})
     if(code === undefined) {
       await del.delete().execute()

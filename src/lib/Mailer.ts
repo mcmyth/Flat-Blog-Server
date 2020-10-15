@@ -2,9 +2,8 @@ import { env } from '../config/env'
 import { webBaseURL } from '../config/blog.config'
 
 const nodemailer = require('nodemailer')
-const Utils = require('../lib/Utils')
-let smtpTransport = require('nodemailer-smtp-transport')
 
+let smtpTransport = require('nodemailer-smtp-transport')
 smtpTransport = nodemailer.createTransport(smtpTransport({
   host: "smtp.exmail.qq.com",
   port:465,
@@ -31,11 +30,20 @@ export const sendMail = async (form, to, subject, html) => {
   })
 }
 
-export const sendCaptchaKey = async (to, captchaKey, user) => {
-  const verificationLink = `${webBaseURL}verification?type=email&id=${user.id}&code=${captchaKey}`
-  const description = '我们收到了来自您账户邮箱验证请求,点击链接或按钮以通过验证<br/>如果您不知道这是什么或对此不知情,请不要点击<br/>(10分钟内有效)'
+export const sendCaptchaKey = async (to, captchaKey, user, type) => {
+  let verificationLink, description, subject
+  if (type === 'email') {
+    verificationLink = `${webBaseURL}verification?type=email&id=${user.id}&code=${captchaKey}`
+    description = '我们收到了来自您账户的邮箱验证请求,点击链接或按钮以通过验证<br/>如果您不知道这是什么或对此不知情,请不要点击<br/>(10分钟内有效)'
+    subject = '邮箱验证 - MC Myth Blog'
+  }
+  if (type === 'password') {
+    verificationLink = `${webBaseURL}pwd?type=password&id=${user.id}&code=${captchaKey}`
+    description = '我们收到了来自您账户的更改密码请求,点击链接或按钮以更改密码<br/>如果您不知道这是什么或对此不知情,请不要点击<br/>(10分钟内有效)'
+    subject = '更改密码 - MC Myth Blog'
+  }
   const template = `<div style="max-width:600px;margin: 0 auto;box-shadow: rgba(0, 0, 0, 0.09) 5px 5px 0px;border-radius:5px;overflow: hidden; "><div style="background-color: #2196f3;padding:15px 15px 15px 15px;font-size:18px;font-family:'微软雅黑';    box-shadow: rgba(33, 150, 243, 0.3) 0px 4px 0px;
-   "><a style="text-decoration: none;color:#fff;" href="https://mc-myth.cn">MC Myth</a></div>
+   "><a style="text-decoration: none;color:#fff;" href="${webBaseURL}">MC Myth</a></div>
 <div style="text-align:center;color:#666;margin:25px 5px 25px 5px;"><h3>Hi,${user.username}!
 </h3>
     <div>${description}</div>
@@ -50,7 +58,7 @@ export const sendCaptchaKey = async (to, captchaKey, user) => {
   const mail = {
     form: 'CaptchaKey',
     to,
-    subject: '验证码',
+    subject,
     html: template
   }
   return await sendMail(mail.form, to, mail.subject, mail.html)

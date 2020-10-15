@@ -42,7 +42,6 @@ export const UserDao = {
     if (checkUser !== undefined) {
       response.status = 'error'
       response.msg = '邮箱已存在'
-      console.log(response)
       return response
     }
     let user = new User()
@@ -103,14 +102,14 @@ export const UserDao = {
     response['message'] = '获取成功'
     return response
   },
-  profileByID: async (id,deep = false) => {
+  profileByAccount: async (id, deep = false) => {
     let profile:any = {
       status: 'unknown',
       msg: '未知错误'
     }
     const entityManager = getManager()
     let response:any = await entityManager.getRepository(User).createQueryBuilder('user')
-      .where('id = :id OR uuid = :id OR username = :id', {id})
+      .where('id = :id OR uuid = :id OR username = :id OR email = :id', {id})
     if(deep) {
       response = await response.select(['user.id', 'user.username', 'user.nickname', 'user.uuid', 'user.email_verified', 'user.email']).getOne()
     } else {
@@ -161,10 +160,23 @@ export const UserDao = {
       return response
     }
     const entityManager = getManager()
+    let profile = await UserDao.profileByAccount(id,true)
+    // Exclude itself to find whether other users have the same mailbox
+    let profileByEmail:any = await entityManager.getRepository(User).createQueryBuilder('user')
+      .where('email = :email',{email})
+      .andWhere('id != :id AND uuid != :id AND username != :id AND email != :id', {id})
+      .getOne()
+    if (profile.status === 'error') return profile
+    if(await UserDao.profileByAccount(email) !== undefined && profileByEmail !== undefined) {
+      return {
+        status: 'error',
+        msg: '该邮箱已被注册'
+      }
+    }
     await entityManager.createQueryBuilder()
       .update(User)
       .set({email})
-      .where("id = :id", {id})
+      .where("id = :id", {id: profile.id})
       .execute()
     response.status = 'ok'
     response.msg = '邮箱更新成功'
@@ -183,6 +195,22 @@ export const UserDao = {
       .execute()
     response.status = 'ok'
     response.msg = '状态更新成功'
+    return response
+  },
+  updatePassword: async (id, password) => {
+    let response:any = {
+      status: 'unknown',
+      msg: '未知错误'
+    }
+    password = await bcrypt.hash(password, 10)
+    const entityManager = getManager()
+    await entityManager.createQueryBuilder()
+      .update(User)
+      .set({password})
+      .where("id = :id", {id})
+      .execute()
+    response.status = 'ok'
+    response.msg = '密码已更改'
     return response
   }
 }

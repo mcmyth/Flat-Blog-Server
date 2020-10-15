@@ -94,7 +94,7 @@ export const PostDao = {
       .select(['post.id', 'post.title', 'post.content_md', 'post.content_html', 'post.uuid', 'post.header_img', 'post.user_id', 'post.update_date', 'post.post_date'])
       .getOne()
     if (response !== undefined) {
-      response.user = await UserDao.profileByID(response.user_id)
+      response.user = await UserDao.profileByAccount(response.user_id)
       response.user_id
       response.update_date = Utils.DateFormatter(response.update_date)
       response['status'] = 'ok'
@@ -129,7 +129,7 @@ export const PostDao = {
     }
     const entityManager = getManager()
     if (!options.isMe && options.isMe !== undefined) {
-      const profile = await UserDao.profileByID(options.id)
+      const profile = await UserDao.profileByAccount(options.id)
       id = profile.id
     }
     //get post
@@ -184,7 +184,7 @@ export const PostDao = {
         preserveTags: true
       })
       v.content_html = Utils.parseToText(tHtml.html)
-      const profile = await UserDao.profileByID(v.user_id)
+      const profile = await UserDao.profileByAccount(v.user_id)
       delete v.user_id
       v['nickname'] = profile.nickname
       v['username'] = profile.username

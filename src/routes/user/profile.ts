@@ -7,7 +7,7 @@ const Utils = require('../../lib/Utils')
 
 router.get('/profile', (req: any, res: any) => {
   if (req.query.id !== undefined) {
-    UserDao.profileByID(req.query.id).then(response => {
+    UserDao.profileByAccount(req.query.id).then(response => {
       res.json(response)
     })
   } else {

@@ -108,7 +108,7 @@ export const CommentDao = {
     comment = await comment.getMany()
     for (let i = 0; i < comment.length; i++) {
       let v = comment[i]
-      const profile = await UserDao.profileByID(v.user_id)
+      const profile = await UserDao.profileByAccount(v.user_id)
       delete v.user_id
       v.user = {
         id: profile.id,
