@@ -122,7 +122,8 @@ export const PostDao = {
     }
   },
   getPostList: async (options) => {
-    let id = options.id
+    let profile = await UserDao.profileByAccount(options.id)
+    let id = profile.id
     let response = {
       status: 'unknown',
       msg: '未知错误'
@@ -142,16 +143,18 @@ export const PostDao = {
       .skip(pageIndex)
       .take(pageSize)
       .orderBy('post.id',"DESC")
-    let searchCondition = 'post.title LIKE :param or post.content_md LIKE :param'
+    let searchCondition = '(post.title LIKE :param or post.content_md LIKE :param)'
     if(options.id !== undefined) {
       //get post count
       if (options.s !== undefined) {
         _count = await entityManager.getRepository(Post).createQueryBuilder('post')
           .select('COUNT(*)','count')
-          .where(searchCondition + ' and user_id = :id',{param: `%${options.s}%`, id})
+          .where('user_id = :id', {id})
+          .andWhere(searchCondition,{param: `%${options.s}%`})
           .getRawOne()
         post = await post
-          .where(searchCondition + ' and user_id = :id',{param: `%${options.s}%`,id})
+          .where('user_id = :id', {id})
+          .andWhere(searchCondition,{param: `%${options.s}%`})
           .getMany()
       } else {
         _count = await entityManager.getRepository(Post).createQueryBuilder('post')
