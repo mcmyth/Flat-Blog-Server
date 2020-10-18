@@ -83,6 +83,7 @@ router.post('/verification', async (req: any, res: any) => {
     if (profile.email_verified === 0) {
       if(email !== undefined) {
         const updateEmail = await UserDao.updateUserEmail(id, email)
+        msg = '邮箱已更改并已发送验证邮件到新邮箱'
         if(updateEmail.status === 'error') return res.json(updateEmail)
         id = email
         profile.email = email
@@ -98,6 +99,7 @@ router.post('/verification', async (req: any, res: any) => {
         return
       } else {
         email = profile.email
+        msg = '已发送验证邮件到原邮箱'
       }
     } else {
       res.json({
@@ -108,7 +110,7 @@ router.post('/verification', async (req: any, res: any) => {
     }
     //Send verification email
     let response = await VerificationDao.newCode(id, type, email)
-    if (response.status === 'ok') response.msg = '邮箱已更改并已发送验证邮件到新邮箱'
+    if (response.status === 'ok') response.msg = msg
     res.json(response)
     return
   }

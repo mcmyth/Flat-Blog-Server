@@ -16,10 +16,7 @@ export class Verification {
   @Column()
   code: string;
 
-  @Column({
-    type: 'datetime',
-    default: () => "'" + DateFormatter(new Date()) + "'"
-  })
+  @Column()
   generation_date: string;
 
   @BeforeInsert()

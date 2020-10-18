@@ -17,5 +17,6 @@ app.all('*', (req, res, next) => {
   Config.CrossOrigin(req, res, next)
 })
 app.use('/', index);
+app.use('/api', index);
 dbConnection(app)
 

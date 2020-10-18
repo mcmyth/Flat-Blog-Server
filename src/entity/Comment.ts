@@ -9,9 +9,7 @@ export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    default: () => "'" + String(uuid.v1()) + "'",
-  })
+  @Column()
   uuid: string;
 
   @Column()
@@ -35,5 +33,7 @@ export class Comment {
   @BeforeInsert()
   UpdateDate() {
     this.comment_date =  DateFormatter(new Date())
+    this.uuid = uuid.v1()
   }
+
 }

@@ -13,7 +13,7 @@ export const UserDao = {
     }
     if (Utils.usernameIsValid(username) === false) {
       response.status = 'error'
-      response.msg = '用户名长度3-8且必须包含大写或小写字母,可包含数字或下划线'
+      response.msg = '用户名长度3-10且必须包含大写或小写字母,可包含数字或下划线'
       return response
     }
     if (Utils.passwordIsValid(password) === false) {
@@ -136,7 +136,7 @@ export const UserDao = {
     if (profile.status === 'error') return profile
     if (Utils.usernameIsValid(nickname) === false) {
       response.status = 'error'
-      response.msg = '用户名长度3-8且必须包含大写或小写字母,可包含数字或下划线'
+      response.msg = '用户名长度3-10且必须包含大写或小写字母,可包含数字或下划线'
       return response
     }
     const entityManager = getManager()
