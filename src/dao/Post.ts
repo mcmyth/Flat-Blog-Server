@@ -18,6 +18,7 @@ export const PostDao = {
       post_id: null,
       post_uuid: null
     }
+    content_md = content_md.replace(/\n+$/, '')
     const entityManager = getManager()
     let post = new Post()
     const profile = await Utils.getProfileByToken(token)
@@ -43,6 +44,7 @@ export const PostDao = {
       post_id: null,
       post_uuid: null
     }
+    content_md = content_md.replace(/\n+$/, '')
     const profile = await Utils.getProfileByToken(token)
     if (profile.status === 'error') return profile
     const postInfo = await PostDao.getPost(id)

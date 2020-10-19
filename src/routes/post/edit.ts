@@ -32,10 +32,10 @@ router.post('/edit', async (req: any, res: any) => {
         response = await PostDao.newPost(token, title, content_md)
       } else {
         response = await PostDao.updatePost(id, token, title, content_md)
-        if (response.status === 'error') {
-          res.json(response)
-          return
-        }
+      }
+      if (response.status === 'error') {
+        res.json(response)
+        return
       }
       const postId = response.post_uuid
       if (postId === undefined) return
