@@ -37,8 +37,11 @@ export const passwordIsValid = v => /^(?=.*[0-9])(?=.*[a-zA-Z!@#$%^&*?+_])[a-zA-
 export const emailIsValid = v => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v)
 
 export const parseToText = str => {
-  str = str.replace(/<audio(.*)>(.*)<\/audio>/g, '[音频]')
-  str = str.replace(/<img(.*)>(.*)<\/img>/g, '[图片]')
+  str = str.replace('\n', '')
+  str = str.replace(/<audio[\w\W]+?>(.*)<\/audio>/g, '[音频]')
+  console.log(str);
+  str = str.replace(/<code [\w\W]+?>(.*)<\/code>/g, '[代码]')
+  str = str.replace(/<img[\w\W]+?>/g, '[图片]')
   str = str.replace(/<[^>]*>/g, '')
   return str
 }
