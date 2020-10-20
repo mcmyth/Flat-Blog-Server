@@ -18,10 +18,10 @@ export class Post {
   @Column({select: false})
   title: string;
 
-  @Column({length: 5000})
+  @Column("mediumtext")
   content_md: string;
 
-  @Column({length: 20000})
+  @Column("mediumtext")
   content_html: string;
 
   @Column()
