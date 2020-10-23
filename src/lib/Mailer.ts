@@ -5,8 +5,8 @@ const nodemailer = require('nodemailer')
 
 let smtpTransport = require('nodemailer-smtp-transport')
 smtpTransport = nodemailer.createTransport(smtpTransport({
-  host: "smtp.exmail.qq.com",
-  port:465,
+  host: env.email.host,
+  port: env.email.port,
   auth: {
     user: env.email.user,
     pass: env.email.pass
