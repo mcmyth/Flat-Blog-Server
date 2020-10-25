@@ -13,6 +13,7 @@ app.use(session(Config.SessionConfig))
 app.use(expressJwt(Config.jwtConfig).unless({
   path: ["/register", "/login"]
 }))
+app.use((err, req, res, next) => {console.log(err.message);next()})
 app.all('*', (req, res, next) => {
   Config.CrossOrigin(req, res, next)
 })

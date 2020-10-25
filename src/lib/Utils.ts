@@ -39,7 +39,6 @@ export const emailIsValid = v => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v)
 export const parseToText = str => {
   str = str.replace('\n', '')
   str = str.replace(/<audio[\w\W]+?>(.*)<\/audio>/g, '[音频]')
-  console.log(str);
   str = str.replace(/<code [\w\W]+?>(.*)<\/code>/g, '[代码]')
   str = str.replace(/<img[\w\W]+?>/g, '[图片]')
   str = str.replace(/<[^>]*>/g, '')
@@ -53,11 +52,11 @@ export const getProfileByToken = async token => {
     const raw = String(token).split(' ').pop()
     const user = await jwt.verify(raw, jwtConfig.secret)
     user['status'] = 'ok'
-    user['status'] = '获取成功'
+    user['msg'] = '获取成功'
     return user
   } catch (err) {
     let msg = err.message
-    if (err.message === 'jwt malformed')
+    if (err.message === 'jwt malformed' || err.message === 'jwt expired')
       msg = '未登录或令牌已过期'
     return {
       status: 'error',

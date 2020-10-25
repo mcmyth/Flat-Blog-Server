@@ -111,13 +111,19 @@ router.post('/verification', async (req: any, res: any) => {
     //Send verification email
     let response = await VerificationDao.newCode(id, type, email)
     if (response.status === 'ok') response.msg = msg
-    res.json(response)
+    res.json({
+      status: response.status,
+      msg: response.msg
+    })
     return
   }
   if (type === 'password') {
     const response = await VerificationDao.newCode(id, type, profile.email)
     response.email_verified = profile.email_verified
-    res.json(response)
+    res.json({
+      status: response.status,
+      msg: response.msg
+    })
     return
   }
   res.json({
