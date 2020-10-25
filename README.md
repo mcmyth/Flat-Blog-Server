@@ -1,4 +1,4 @@
- # Flat Blog-Server
+ # Flat-Blog-Server
 
    ![npm version](https://img.shields.io/badge/npm-6.14.6-blue)
    ![typeorm version](https://img.shields.io/badge/typeorm-0.2.26-blue)
