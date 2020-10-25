@@ -109,7 +109,7 @@ export const UserDao = {
     }
     const entityManager = getManager()
     let response:any = await entityManager.getRepository(User).createQueryBuilder('user')
-      .where('id = :id OR uuid = :id OR username = :id OR email = :id', {id})
+      .where('id = :id OR uuid = :str_id OR username = :str_id OR email = :str_id', {id, str_id: String(id)})
     if(deep) {
       response = await response.select(['user.id', 'user.username', 'user.nickname', 'user.uuid', 'user.email_verified', 'user.email']).getOne()
     } else {

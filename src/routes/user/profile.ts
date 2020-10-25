@@ -3,7 +3,6 @@ import {Router} from 'express'
 import {UserDao} from '../../dao/User'
 
 const router = Router()
-const Utils = require('../../lib/Utils')
 
 router.get('/profile', (req: any, res: any) => {
   if (req.query.id !== undefined) {

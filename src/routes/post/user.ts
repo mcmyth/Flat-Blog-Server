@@ -6,7 +6,7 @@ const Utils = require('../../lib/Utils')
 
 router.get('/user', async (req: any, res: any) => {
   const token = req.headers.authorization
-  const id = req.query.id
+  let id = req.query.id
   const page = req.query.page === undefined ? 1 : Number(req.query.page)
   const s = req.query.s
   const profile = await Utils.getProfileByToken(token)
