@@ -96,11 +96,18 @@ export const UserDao = {
     let response = await entityManager.getRepository(User).createQueryBuilder('user')
       .where('id = :id', {id: profile.id})
       .getOne()
-    response['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + response.uuid
-    response['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + response.uuid
-    response['status'] = 'ok'
-    response['message'] = '获取成功'
-    return response
+    if (response !== undefined) {
+      response['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + response.uuid
+      response['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + response.uuid
+      response['status'] = 'ok'
+      response['message'] = '获取成功'
+      return response
+    } else {
+      return {
+        status: 'error',
+        msg: '获取失败,该用户可能不存在'
+      }
+    }
   },
   profileByAccount: async (id, deep = false) => {
     let profile:any = {
