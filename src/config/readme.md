@@ -15,10 +15,17 @@ export const env = {
    },
  email: {
      host: 'Your Host',
-     port: 'Your Port'
+     port: 'Your Port',
      user: 'Your Email',
      pass: 'Your Password'
-   }
+   },
+ database: {
+     host: "Your Mysql Host",
+     port: 3306,
+     username: "root",
+     password: "Your Mysql Password",
+     database: "Your Mysql Database",
+ }
 }
 ~~~
 

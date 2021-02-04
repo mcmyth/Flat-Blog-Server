@@ -23,18 +23,15 @@
    npm run start
    ```
 
-   ### 配置项目
-
-   #### 基本配置
-
    ##### 配置后端api的URL
 
    在`src/config/blog.config.js`中配置jwt/session/cross相关信息
 
-   #### 配置COS
-
+   #### 配置COS/邮箱/数据库
+   
    用于存储用户头像/头图/文章文件上传到[腾讯云对象储存](https://cloud.tencent.com/product/cos)
 
+`src/config/env.ts`
    ~~~typescript
    export const env = {
      cos: {
@@ -49,7 +46,14 @@
      email: {
          user: 'Your Email',
          pass: 'Your Password'
-       }
+       },
+     database: {
+         host: "Your Mysql Host",
+         port: 3306,
+         username: "root",
+         password: "Your Mysql Password",
+         database: "Your Mysql Database",
+     }
    }
    ~~~
 
