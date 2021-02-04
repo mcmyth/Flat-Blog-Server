@@ -17,9 +17,11 @@ export const jwtConfig = {
 }
 
 export const CrossOrigin = (req, res, next) => {
-  const allowedOrigins = ['http://localhost:888', 'http://localhost:8081', 'http://localhost:8080', 'http://site.com:8080', 'http://localhost:3000/']
+  const allowedOrigins = [
+    'http://localhost:8080'
+  ]
   const origin = req.headers.origin
-  if (allowedOrigins.indexOf(origin) > -1) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin)
   }
   res.header("Access-Control-Allow-Credentials", "true")
