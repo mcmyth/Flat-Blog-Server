@@ -24,7 +24,7 @@ export class Post {
   @Column("mediumtext")
   content_html: string;
 
-  @Column()
+  @Column({ nullable: true })
   header_img: string;
 
   @Column({

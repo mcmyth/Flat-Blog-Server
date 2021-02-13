@@ -21,7 +21,7 @@ export class Comment {
   @Column()
   content: string;
 
-  @Column()
+  @Column({ nullable: true })
   reply_id: number;
 
   @Column({
