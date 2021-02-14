@@ -4,7 +4,17 @@ const session = require('express-session')
 const expressJwt = require('express-jwt')
 const index = require('./routes')
 const Config = require('./config/blog.config')
+import {BotServer} from './lib/Bot'
 import {dbConnection} from './dao'
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      botServer: BotServer
+    }
+  }
+}
+
 
 const app = express()
 app.use(cookieParser())
@@ -19,5 +29,5 @@ app.all('*', (req, res, next) => {
 })
 app.use('/', index);
 app.use('/api', index);
-dbConnection(app)
+dbConnection(app).then(() => {global.botServer = new BotServer()})
 

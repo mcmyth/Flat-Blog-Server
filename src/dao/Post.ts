@@ -1,14 +1,21 @@
 import {getManager} from 'typeorm'
 import {Post} from '../entity/Post'
-import {DateFormatter} from "../lib/Utils";
-import {UserDao} from "./User";
-import {CommentDao} from "./Comment";
-import {env} from "../config/env";
+import {DateFormatter} from "../lib/Utils"
+import {UserDao} from "./User"
+import {CommentDao} from "./Comment"
+import {env} from "../config/env"
+import {BotServer} from "../lib/Bot"
 const COS = require('../lib/Cos')
-
 const Utils = require('../lib/Utils')
-const marked = require('marked');
-const trimHtml = require('trim-html')
+const marked = require('marked')
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      botServer: BotServer
+    }
+  }
+}
 
 export const PostDao = {
   newPost: async (token, title, content_md, header_img?) => {
@@ -35,6 +42,9 @@ export const PostDao = {
     response.msg = '发表成功'
     response.post_id = postInfo.id
     response.post_uuid = postInfo.uuid
+    // 机器人推送消息
+    await global.botServer.sendPost(post.id, post.user_id, post.title,post.content_html, 0)
+
     return response
   },
   updatePost: async (id, token, title, content_md, header_img?) => {
@@ -79,6 +89,9 @@ export const PostDao = {
     response.msg = '更新成功'
     response.post_id = postInfo.id
     response.post_uuid = postInfo.uuid
+    // bot
+    const post = await PostDao.getPost(postInfo.uuid)
+    await global.botServer.sendPost(postInfo.id, profile.id, post.title, post.content_html, 1)
     return response
   },
   insertBanner: async (id, header_img) => {

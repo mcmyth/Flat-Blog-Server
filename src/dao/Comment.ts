@@ -2,8 +2,18 @@ import {getManager} from 'typeorm'
 import {Comment} from '../entity/Comment'
 import {UserDao} from "./User"
 import {env} from "../config/env"
+import {BotServer} from "../lib/Bot"
+import {PostDao} from "./Post"
 
 const Utils = require('../lib/Utils')
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      botServer: BotServer
+    }
+  }
+}
 
 export const CommentDao = {
   newComment: async (token,post_id,content) => {
@@ -28,6 +38,9 @@ export const CommentDao = {
     response.comment_id = commentInfo.id
     response.status = 'ok'
     response.msg = '发表成功'
+    // bot
+    const post = await PostDao.getPost(post_id)
+    await global.botServer.sendPost(post_id, profile.id, post.title, comment.content, 2)
     return response
   },
   delComment: async (token, postId, commentId) => {
