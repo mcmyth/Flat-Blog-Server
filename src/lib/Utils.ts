@@ -1,5 +1,5 @@
 import {jwtConfig} from '../config/blog.config'
-
+const trimHtml = require('trim-html')
 const jwt = require('jsonwebtoken')
 
 export const lookupArrayKey = (arr: Array<string>, name: string) => {
@@ -77,4 +77,14 @@ export const randomId = (length = 5) => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength))
   }
   return result
+}
+
+export const simpleDescription = (html: string, length: number = 300) => {
+  let tHtml = trimHtml(html, {
+    limit: 200,
+    preserveTags: true
+  })
+  let description = parseToText(tHtml.html)
+  if (description.length > 300) description = description.slice(0,length) + '...'
+  return description
 }

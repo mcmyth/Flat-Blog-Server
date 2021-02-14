@@ -184,12 +184,7 @@ export const PostDao = {
     }
     for (let i = 0; i < post.length; i++) {
       let v = post[i]
-      let tHtml = trimHtml(v.content_html, {
-        limit: 200,
-        preserveTags: true
-      })
-      v.content_html = Utils.parseToText(tHtml.html)
-      if (v.content_html.length > 300) v.content_html = v.content_html.slice(0,300) + '...'
+      v.content_html = Utils.simpleDescription(v.content_html)
       const profile = await UserDao.profileByAccount(v.user_id)
       delete v.user_id
       v['nickname'] = profile.nickname
