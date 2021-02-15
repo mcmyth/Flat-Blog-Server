@@ -5,7 +5,6 @@ import {PostDao} from "../dao/Post";
 
 const fs = require('fs')
 const webp = require('webp-converter')
-const uuid = require('uuid')
 
 export class uploadFile {
   static userBanner(res, options) {
@@ -35,6 +34,8 @@ export class uploadFile {
         fs.unlink(options.newPath, error => {})
         fs.unlink(webpPath, error => {})
         res.send(options.response)
+      } else {
+        console.log(err)
       }
     })
   }
