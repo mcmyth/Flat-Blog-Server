@@ -33,11 +33,11 @@ export class BotServer {
   public async sendPost(id:number, user: string, title: string, description: string, type: 0 | 1 | 2) {
     const userProfile = await UserDao.profileByAccount(user)
     const text = `[MC Myth Blog]\n` +
-      `${userProfile.username}${type === 0 ? `发表了新文章 《${title}》` :
-        type === 1 ? `更新了文章《${title}》` : 
-        type === 2 ? `发表针对《${title}》评论` : ''}\n` +
+      `${userProfile.username}${type === 0 ? `发表了新文章 《${title}》\n` :
+        type === 1 ? `更新了文章《${title}》\n` : 
+        type === 2 ? `针对《${title}》发表了评论\n` : ''}` +
       `${simpleDescription(description)}\n`+
-      `http://${env.blogDomain}/post/${id}`
+      `${env.blogURL}/post/${id}`
     console.log(text)
     this.send(text)
   }
