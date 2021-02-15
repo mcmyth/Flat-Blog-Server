@@ -21,7 +21,7 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   email_verified: number;
 
   @Column()
