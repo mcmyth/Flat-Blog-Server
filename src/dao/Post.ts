@@ -203,7 +203,7 @@ export const PostDao = {
       v['nickname'] = profile.nickname
       v['username'] = profile.username
       v['avatar_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/avatar_img/' + profile.uuid
-      if (v.header_img === '') {
+      if (v.header_img === null) {
         v['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'user/banner_img/' + profile.uuid
       } else {
         v['banner_img'] = 'https://' + env.cos.assetsDomain + '/' + env.cos.remoteBasePath + 'post/banner/' + v.uuid
