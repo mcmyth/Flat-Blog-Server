@@ -21,7 +21,7 @@ export class User {
   @Column()
   email: string;
 
-  @Column({ nullable: true })
+  @Column()
   email_verified: number;
 
   @Column()
@@ -31,8 +31,9 @@ export class User {
   register_date: string;
 
   @BeforeInsert()
-  UpdateDate() {
+  setDefaultData() {
     this.register_date =  DateFormatter(new Date())
     this.uuid = uuid.v1()
+    this.email_verified = 0
   }
 }
