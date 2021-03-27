@@ -1,5 +1,10 @@
 import {createConnection} from "typeorm"
 import {env} from "../config/env";
+import { User } from '../entity/User'
+import { Media } from '../entity/Media'
+import { Post } from '../entity/Post'
+import { Comment } from '../entity/Comment'
+import { Verification } from '../entity/Verification'
 export const dbConnection = async (app) => {
   createConnection({
       "host": env.database.host,
@@ -12,7 +17,11 @@ export const dbConnection = async (app) => {
       "synchronize": true,
       "logging": false,
       "entities": [
-        "src/entity/**/*.ts"
+        User,
+        Post,
+        Media,
+        Comment,
+        Verification
       ],
       "migrations": [
         "src/migration/**/*.ts"
